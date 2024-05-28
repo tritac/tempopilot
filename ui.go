@@ -18,7 +18,7 @@ type TempoGUI struct {
 
 func (g *TempoGUI) MakeGUI() fyne.CanvasObject {
 
-	dateView := canvas.NewRectangle(color.Gray{Y: 0x99})
+	dateView := g.makeMonthWorkdaysList()
 	workLogStats := widget.NewLabel("work log stats one ")
 	workLogDetails := canvas.NewRectangle(color.Gray{Y: 0xff})
 	objs := []fyne.CanvasObject{dateView, workLogStats, workLogDetails}
@@ -69,4 +69,28 @@ func (g *TempoGUI) WelcomeAndKeyDialog() {
 	dialog.Resize(fyne.Size{Width: 300, Height: 200})
 	dialog.Show()
 
+}
+
+func (g *TempoGUI) makeMonthWorkdaysList() *widget.List {
+
+	list := createList([]int{1, 2, 3, 4, 5, 6, 7})
+	return list
+}
+func createList(data []int) *widget.List {
+	list := widget.NewList(
+		// func that returns the number of items in the list
+		func() int {
+			return len(data)
+		},
+		// func that returns the component structure of the List Item
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		// func that is called for each item in the list and allows
+		// you to show the content on the previously defined ui structure
+		func(i widget.ListItemID, o fyne.CanvasObject) {
+			o.(*widget.Label).SetText(string("test"))
+		})
+
+	return list
 }

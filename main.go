@@ -16,7 +16,7 @@ func main() {
 	a := app.NewWithID("com.tempopilot.amit")
 	w := a.NewWindow("Tempo Pilot")
 	gui := TempoGUI{win: w, preferences: a.Preferences()}
-	gui.WelcomeAndKeyDialog()
+	// gui.WelcomeAndKeyDialog()
 	w.SetContent(container.NewStack(gui.MakeGUI()))
 	w.ShowAndRun()
 }
