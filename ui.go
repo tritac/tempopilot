@@ -3,17 +3,21 @@ package main
 import (
 	"fmt"
 	"image/color"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/tritac/tempopilot/worklogs"
 )
 
 type TempoGUI struct {
 	win         fyne.Window
 	preferences fyne.Preferences
+	data        *worklogs.WorkLogStore
 }
 
 func (g *TempoGUI) MakeGUI() fyne.CanvasObject {
@@ -73,24 +77,48 @@ func (g *TempoGUI) WelcomeAndKeyDialog() {
 
 func (g *TempoGUI) makeMonthWorkdaysList() *widget.List {
 
-	list := createList([]int{1, 2, 3, 4, 5, 6, 7})
+	list := createList(g.data.GenerateMonthDays(2024, time.Now().Month()))
 	return list
 }
-func createList(data []int) *widget.List {
+func createList(data []worklogs.WorkDay) *widget.List {
+
 	list := widget.NewList(
-		// func that returns the number of items in the list
 		func() int {
 			return len(data)
 		},
-		// func that returns the component structure of the List Item
 		func() fyne.CanvasObject {
-			return widget.NewLabel("template")
+			return canvas.NewText("template", color.NRGBA{R: 0, G: 255, B: 0, A: 255})
 		},
-		// func that is called for each item in the list and allows
-		// you to show the content on the previously defined ui structure
 		func(i widget.ListItemID, o fyne.CanvasObject) {
-			o.(*widget.Label).SetText(string("test"))
+			o.(*canvas.Text).Text = data[i].WeekDay.String()
 		})
 
 	return list
+}
+
+func listItem(date string, weekDay string) fyne.CanvasObject {
+	return container.NewBorder(
+		nil, nil, nil,
+		// left of the border
+		widget.NewCheck("", func(b bool) {}),
+		// takes the rest of the space
+		widget.NewLabel(date),
+	)
+}
+
+func dateRowList() fyne.CanvasObject {
+	return container.NewGridWithColumns(3,
+		widget.NewLabel("asas"),
+		container.NewMax(),
+		rightAligned(
+			container.NewHBox(
+				widget.NewButtonWithIcon("", theme.ZoomInIcon(), func() {}),
+				widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {}),
+			),
+		),
+	)
+}
+
+func rightAligned(object fyne.CanvasObject) *fyne.Container {
+	return container.NewBorder(nil, nil, nil, object)
 }
