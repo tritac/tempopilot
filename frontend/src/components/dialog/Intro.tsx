@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreateUserConfig } from '../../../wailsjs/go/main/App';
+import { CreateUserConfig, VerifyApiKey } from '../../../wailsjs/go/main/App';
 import { useAppStore } from '../../AppContext';
 type Props = {};
 
@@ -12,7 +12,20 @@ function Intro({}: Props) {
   const [tempoUserId, setTempoId] = useState('');
 
   const submitHandler = () => {
-    CreateUserConfig(userName, tempoApiKey, tempoUserId);
+    // CreateUserConfig(userName, tempoApiKey, tempoUserId);
+    VerifyApiKey(tempoApiKey)
+      .then((res) => {
+        if (res) {
+          CreateUserConfig(userName, tempoApiKey, tempoUserId)
+            .then((res) => {
+              location.reload();
+            })
+            .then((err) => {});
+        }
+      })
+      .then((err: any) => {
+        console.log(err, 'Error');
+      });
   };
 
   return (

@@ -14,6 +14,6 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
-export function ValidateApiKey() {
-  return window['go']['main']['App']['ValidateApiKey']();
+export function VerifyApiKey(arg1) {
+  return window['go']['main']['App']['VerifyApiKey'](arg1);
 }

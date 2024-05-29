@@ -48,11 +48,13 @@ const AppContextProvider = ({
 }): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  GetUserConfig()
-    .then((userConfig) => {
-      dispatch({ type: 'SET_USER_CONFIG', payload: userConfig });
-    })
-    .catch((config) => {});
+  useEffect(() => {
+    GetUserConfig()
+      .then((userConfig) => {
+        dispatch({ type: 'SET_USER_CONFIG', payload: userConfig });
+      })
+      .catch((config) => {});
+  }, []);
 
   return (
     <AppContext.Provider value={{ appState: state, dispatch: dispatch }}>

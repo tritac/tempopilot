@@ -20,12 +20,14 @@ type AppStore struct {
 }
 
 func NewAppStore() *AppStore {
+
 	configFilePath, err := xdg.ConfigFile("tempopilot/config.json")
 
 	if err != nil {
 		panic(err)
 	}
 	f, err := os.OpenFile(configFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
 	if err != nil {
 		panic(err)
 	}
@@ -34,8 +36,8 @@ func NewAppStore() *AppStore {
 	return &AppStore{ConfigPath: configFilePath}
 }
 
-func (as *AppStore) StoreConfig(name, apiKey, userId string) (UserConfig, error) {
-	userConfig := UserConfig{ApiKey: apiKey, UserName: name, UserId: userId}
+func (as *AppStore) StoreConfig(name, apiKey, userId string, isVerified bool) (UserConfig, error) {
+	userConfig := UserConfig{ApiKey: apiKey, UserName: name, UserId: userId, IsValidApi: isVerified}
 	userJson, err := json.Marshal(userConfig)
 	if err != nil {
 		fmt.Println(err)

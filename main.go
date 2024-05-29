@@ -2,8 +2,10 @@ package main
 
 import (
 	"embed"
+	"time"
 
 	"github.com/tritac/tempopilot/cmd/internals/appstore"
+	api_services "github.com/tritac/tempopilot/cmd/services"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -12,23 +14,31 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+const (
+	host = "https://api.tempo.io/4"
+)
+
 func main() {
 	// Create an instance of the app structure
 	appStore := appstore.NewAppStore()
-	app := NewApp(appStore)
+
+	apiClient := api_services.NewClient(host, appStore.UserConfig.ApiKey, time.Second*5)
+
+	app := NewApp(appStore, apiClient)
 
 	// Create application with options
 
 	err := wails.Run(&options.App{
-		Title:  "tempopilotv2",
+		Title:  "Tempo Pilot",
 		Width:  800,
 		Height: 600,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 0, A: 1},
 		OnStartup:        app.startup,
 		OnDomReady:       app.onDomReady,
+
 		Bind: []interface{}{
 			app,
 		},
