@@ -30,8 +30,8 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:     "Tempo Pilot",
-		Width:     600,
-		Height:    400,
+		Width:     750,
+		Height:    500,
 		MinWidth:  600,
 		MinHeight: 400,
 		AssetServer: &assetserver.Options{

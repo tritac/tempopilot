@@ -6,11 +6,12 @@ import React, {
   useEffect,
   useReducer,
 } from 'react';
-import { appstore } from '../wailsjs/go/models';
+import { appstore, worklog } from '../wailsjs/go/models';
 import { GetUserConfig } from '../wailsjs/go/main/App';
 
 interface IAppState {
   api?: appstore.UserConfig;
+  selected?: worklog.WorkDay;
 }
 interface IApp {
   appState: IAppState;
@@ -24,19 +25,26 @@ const AppContext = React.createContext<IApp>({
 
 const initialState: IAppState = {};
 
-type Action = {
-  type: 'SET_USER_CONFIG';
-  payload: appstore.UserConfig;
-};
+type Action =
+  | {
+      type: 'SET_USER_CONFIG';
+      payload: appstore.UserConfig;
+    }
+  | { type: 'SET_SELECTED_DATE'; payload: worklog.WorkDay };
 
 const reducer = (state: IAppState, action: Action): IAppState => {
-  if (action.type === 'SET_USER_CONFIG') {
-    return {
-      ...state,
-      api: action.payload,
-    };
+  switch (action.type) {
+    case 'SET_USER_CONFIG':
+      return { ...state, api: action.payload };
+      break;
+    case 'SET_SELECTED_DATE':
+      return { ...state, selected: action.payload };
+      break;
+
+    default:
+      return state;
+      break;
   }
-  return state;
 };
 
 const AppContextProvider = ({

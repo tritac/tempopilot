@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/tritac/tempopilot/cmd/internals/appstore"
+	worklog "github.com/tritac/tempopilot/cmd/internals/worklogs"
 	api_services "github.com/tritac/tempopilot/cmd/services"
 )
 
@@ -81,4 +83,14 @@ func (a *App) VerifyApiKey(apiKey string) bool {
 	fmt.Println(string(response))
 	return resp.StatusCode == http.StatusOK
 
+}
+
+func (a *App) GetWorkLog(unixTime int64) ([]worklog.WorkLogResult, error) {
+	date := time.UnixMilli(unixTime)
+	fmt.Println(date)
+	res, err := a.apiClient.GetUserBacklogByDate(date)
+	if err != nil {
+		return []worklog.WorkLogResult{}, err
+	}
+	return res, err
 }

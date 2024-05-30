@@ -28,15 +28,22 @@ func NewAppStore() *AppStore {
 	if err != nil {
 		panic(err)
 	}
-	f, err := os.OpenFile(configFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.ReadFile(configFilePath)
 
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
+	var config UserConfig
+
+	err = json.Unmarshal(file, &config)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(config)
 	workLog := worklog.NewWorkLogStore()
 
-	return &AppStore{ConfigPath: configFilePath, WorkLog: workLog}
+	return &AppStore{ConfigPath: configFilePath, WorkLog: workLog, UserConfig: config}
 }
 
 func (as *AppStore) StoreConfig(name, apiKey, userId string, isVerified bool) (UserConfig, error) {

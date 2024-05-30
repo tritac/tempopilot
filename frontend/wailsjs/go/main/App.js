@@ -14,6 +14,10 @@ export function GetUserConfig() {
   return window['go']['main']['App']['GetUserConfig']();
 }
 
+export function GetWorkLog(arg1) {
+  return window['go']['main']['App']['GetWorkLog'](arg1);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }

@@ -32,13 +32,17 @@ func (c *Client) do(method, endpoint string, params map[string]string) (*http.Re
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Add("Content-Type", "application/json")
-	fmt.Println(c.apiKey, "-----------------------c-c-cc-c-c-")
 	req.Header.Add("Authorization", "Bearer "+c.apiKey)
+
 	q := req.URL.Query()
+
 	for key, val := range params {
 		q.Set(key, val)
 	}
+
 	req.URL.RawQuery = q.Encode()
+
 	return c.httpClient.Do(req)
 }

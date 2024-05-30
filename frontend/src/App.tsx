@@ -6,6 +6,7 @@ import { GetUserConfig, GetMonthList } from '../wailsjs/go/main/App';
 import { appstore } from '../wailsjs/go/models';
 import { useAppStore } from './AppContext';
 import Month from './components/month/Month';
+import WorkDay from './components/workDay/WorkDay';
 
 function App() {
   const {
@@ -31,7 +32,9 @@ function App() {
             <span className='text-xs bg-gray-950 -top-2.5 absolute left-2.5'>
               Work Log [ Ctrl + W ]
             </span>
-            <div>asasasas</div>
+            <div>
+              <WorkDay />
+            </div>
           </div>
         </div>
       </div>

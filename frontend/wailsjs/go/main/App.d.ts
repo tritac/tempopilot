@@ -9,6 +9,8 @@ export function GetMonthList(arg1:number,arg2:number):Promise<Array<worklog.Work
 
 export function GetUserConfig():Promise<appstore.UserConfig>;
 
+export function GetWorkLog(arg1:number):Promise<Array<worklog.WorkLogResult>>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function VerifyApiKey(arg1:string):Promise<boolean>;
