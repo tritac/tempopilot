@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import DayLog from './components/daylog/DayLog';
 import { Environment, EventsEmit } from '../wailsjs/runtime/runtime';
 import Intro from './components/dialog/Intro';
-import { GetUserConfig } from '../wailsjs/go/main/App';
+import { GetUserConfig, GetMonthList } from '../wailsjs/go/main/App';
 import { appstore } from '../wailsjs/go/models';
 import { useAppStore } from './AppContext';
+import Month from './components/month/Month';
 
 function App() {
   const {
@@ -15,11 +16,12 @@ function App() {
   if (!api?.isValidApi) {
     return <Intro />;
   }
+
   return (
     <div id='App '>
       <div className='flex '>
         <div className='w-1/3 bg-black text-white h-screen border-r-[1px] '>
-          test
+          <Month />
         </div>
         <div className='w-full bg-gray-950 text-white pt-2 px-2 relative'>
           <div className='h-10'>

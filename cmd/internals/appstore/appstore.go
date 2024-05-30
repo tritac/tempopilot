@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/adrg/xdg"
+	worklog "github.com/tritac/tempopilot/cmd/internals/worklogs"
 )
 
 type UserConfig struct {
@@ -17,6 +18,7 @@ type UserConfig struct {
 type AppStore struct {
 	UserConfig UserConfig
 	ConfigPath string
+	WorkLog    *worklog.WorkLogStore
 }
 
 func NewAppStore() *AppStore {
@@ -32,8 +34,9 @@ func NewAppStore() *AppStore {
 		panic(err)
 	}
 	defer f.Close()
+	workLog := worklog.NewWorkLogStore()
 
-	return &AppStore{ConfigPath: configFilePath}
+	return &AppStore{ConfigPath: configFilePath, WorkLog: workLog}
 }
 
 func (as *AppStore) StoreConfig(name, apiKey, userId string, isVerified bool) (UserConfig, error) {

@@ -6,6 +6,10 @@ export function CreateUserConfig(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateUserConfig'](arg1, arg2, arg3);
 }
 
+export function GetMonthList(arg1, arg2) {
+  return window['go']['main']['App']['GetMonthList'](arg1, arg2);
+}
+
 export function GetUserConfig() {
   return window['go']['main']['App']['GetUserConfig']();
 }

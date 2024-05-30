@@ -69,15 +69,16 @@ func (a *App) VerifyApiKey(apiKey string) bool {
 	req.Header.Add("Authorization", "Bearer "+apiKey)
 	fmt.Println(apiKey)
 	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		return false
+	}
 	defer resp.Body.Close()
 	response, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return false
 	}
 	fmt.Println(string(response))
-	if resp.StatusCode == http.StatusOK {
-		return true
-	}
-	return false
+	return resp.StatusCode == http.StatusOK
 
 }
