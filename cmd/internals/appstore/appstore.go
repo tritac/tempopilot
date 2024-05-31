@@ -28,19 +28,39 @@ func NewAppStore() *AppStore {
 	if err != nil {
 		panic(err)
 	}
-	file, err := os.ReadFile(configFilePath)
+
+	_, err = os.Stat(configFilePath)
+	if err != nil {
+		// check if not file error
+		fileExists := os.IsExist(err)
+		// if file not present , create the file, with empty content
+		if !fileExists {
+			file, err := os.OpenFile(configFilePath, os.O_RDWR|os.O_CREATE, 0644)
+			if err != nil {
+				panic(err)
+			}
+
+			// if file dosnt exits , create a blank file
+			if _, err := file.WriteString(`{"api_key":""}`); err != nil {
+				panic(err)
+			}
+			defer file.Close()
+		}
+	}
+	content, err := os.ReadFile(configFilePath)
 
 	if err != nil {
 		panic(err)
 	}
+
 	var config UserConfig
 
-	err = json.Unmarshal(file, &config)
+	err = json.Unmarshal(content, &config)
 
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
-	fmt.Println(config)
+
 	workLog := worklog.NewWorkLogStore()
 
 	return &AppStore{ConfigPath: configFilePath, WorkLog: workLog, UserConfig: config}
@@ -62,9 +82,11 @@ func (as *AppStore) StoreConfig(name, apiKey, userId string, isVerified bool) (U
 	content, err := fi.Write(userJson)
 	if content != 0 {
 		userConf, err := as.LoadConfig()
+
 		if err != nil {
 			return userConf, err
 		}
+		return userConf, err
 	}
 
 	return UserConfig{}, err

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { CreateUserConfig, VerifyApiKey } from '../../../wailsjs/go/main/App';
 import { useAppStore } from '../../AppContext';
-type Props = {};
+type Props = {
+  setShowSetting: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-function Intro({}: Props) {
+function Intro({ setShowSetting }: Props) {
   const {
     appState: { api },
   } = useAppStore();
@@ -70,7 +72,12 @@ function Intro({}: Props) {
           <button className='border bg-green-500' onClick={submitHandler}>
             SUBMIT
           </button>
-          <button className='border bg-red-500'>CANCEL</button>
+          <button
+            onClick={() => setShowSetting(false)}
+            className='border bg-red-500'
+          >
+            CANCEL
+          </button>
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
@@ -47,6 +46,11 @@ func (a *App) CreateUserConfig(name, apiKey, userId string) (appstore.UserConfig
 	if err != nil {
 		return appstore.UserConfig{}, nil
 	}
+	a.appStore.UserConfig.ApiKey = res.ApiKey
+	a.appStore.UserConfig.UserId = res.UserId
+	a.appStore.UserConfig.IsValidApi = true
+	a.apiClient.ApiKey = res.ApiKey
+
 	return res, nil
 }
 
@@ -76,21 +80,22 @@ func (a *App) VerifyApiKey(apiKey string) bool {
 		return false
 	}
 	defer resp.Body.Close()
-	response, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return false
-	}
-	fmt.Println(string(response))
+
 	return resp.StatusCode == http.StatusOK
 
 }
 
 func (a *App) GetWorkLog(unixTime int64) ([]worklog.WorkLogResult, error) {
-	date := time.UnixMilli(unixTime)
+	date := time.UnixMilli(unixTime * 1000)
 	fmt.Println(date)
 	res, err := a.apiClient.GetUserBacklogByDate(date)
 	if err != nil {
 		return []worklog.WorkLogResult{}, err
 	}
 	return res, err
+}
+
+func (a *App) GetWorkLogTypes() ([]worklog.WorkLogAttr, error) {
+
+	return a.apiClient.GetWorkLogAttribute()
 }

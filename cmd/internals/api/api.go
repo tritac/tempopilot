@@ -30,7 +30,6 @@ func NewClient(host string, apiKey string, timeout time.Duration) *Client {
 	client := &http.Client{
 		Timeout: timeout,
 	}
-	fmt.Println(apiKey, "--------------------------------------------------xxx-xx-x---------------------------")
 	return &Client{
 		host:       host,
 		httpClient: client,

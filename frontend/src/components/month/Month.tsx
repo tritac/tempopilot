@@ -3,6 +3,7 @@ import MonthList from './MonthList';
 import { useAppStore } from '../../AppContext';
 import { GetMonthList } from '../../../wailsjs/go/main/App';
 import { worklog } from '../../../wailsjs/go/models';
+import moment, { now } from 'moment';
 
 type Props = {};
 
@@ -15,7 +16,9 @@ const Month = (props: Props) => {
 
   useEffect(() => {
     if (api?.isValidApi) {
-      GetMonthList(2024, 5).then((res) => {
+      const time = moment(now()).month();
+      console.log({ time });
+      GetMonthList(2024, time + 1).then((res) => {
         setDateList(res);
         // console.log(res);
       });

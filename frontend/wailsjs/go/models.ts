@@ -58,7 +58,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -71,6 +71,28 @@ export namespace worklog {
 		    }
 		    return a;
 		}
+	}
+	export class WorkLogAttr {
+	    self: string;
+	    key: string;
+	    id: number;
+	    name: string;
+	    status: string;
+	    global: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new WorkLogAttr(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.self = source["self"];
+	        this.key = source["key"];
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.status = source["status"];
+	        this.global = source["global"];
+	    }
 	}
 	export class WorkLogValue {
 	    key: string;
@@ -104,7 +126,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -156,7 +178,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {

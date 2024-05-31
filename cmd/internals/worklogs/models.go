@@ -47,3 +47,22 @@ type WorkLogResponse struct {
 	Metadata MetaData        `json:"metadata"`
 	Results  []WorkLogResult `json:"results"`
 }
+
+type WorkLogTypeResponse struct {
+	Self     string `json:"self"`
+	Metadata struct {
+		Count  int `json:"count"`
+		Offset int `json:"offset"`
+		Limit  int `json:"limit"`
+	} `json:"metadata"`
+	Results []WorkLogAttr `json:"results"`
+}
+
+type WorkLogAttr struct {
+	Self   string `json:"self"`
+	Key    string `json:"key"`
+	ID     int    `json:"id"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
+	Global bool   `json:"global"`
+}

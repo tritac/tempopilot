@@ -6,14 +6,11 @@ import (
 	"time"
 )
 
-type (
-	Client struct {
-		host       string
-		httpClient *http.Client
-		apiKey     string
-		apiSecret  string
-	}
-)
+type Client struct {
+	host       string
+	httpClient *http.Client
+	ApiKey     string
+}
 
 func NewClient(host string, apiKey string, timeout time.Duration) *Client {
 	client := &http.Client{
@@ -22,7 +19,7 @@ func NewClient(host string, apiKey string, timeout time.Duration) *Client {
 	return &Client{
 		host:       host,
 		httpClient: client,
-		apiKey:     apiKey,
+		ApiKey:     apiKey,
 	}
 }
 
@@ -34,7 +31,7 @@ func (c *Client) do(method, endpoint string, params map[string]string) (*http.Re
 	}
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer "+c.apiKey)
+	req.Header.Add("Authorization", "Bearer "+c.ApiKey)
 
 	q := req.URL.Query()
 

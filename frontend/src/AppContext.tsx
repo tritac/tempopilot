@@ -7,11 +7,12 @@ import React, {
   useReducer,
 } from 'react';
 import { appstore, worklog } from '../wailsjs/go/models';
-import { GetUserConfig } from '../wailsjs/go/main/App';
+import { GetUserConfig, GetWorkLogTypes } from '../wailsjs/go/main/App';
 
 interface IAppState {
   api?: appstore.UserConfig;
   selected?: worklog.WorkDay;
+  logsTypes?: worklog.WorkLogAttr[];
 }
 interface IApp {
   appState: IAppState;
@@ -30,7 +31,8 @@ type Action =
       type: 'SET_USER_CONFIG';
       payload: appstore.UserConfig;
     }
-  | { type: 'SET_SELECTED_DATE'; payload: worklog.WorkDay };
+  | { type: 'SET_SELECTED_DATE'; payload: worklog.WorkDay }
+  | { type: 'SET_LOG_TYPES'; payload: worklog.WorkLogAttr[] };
 
 const reducer = (state: IAppState, action: Action): IAppState => {
   switch (action.type) {
@@ -39,6 +41,9 @@ const reducer = (state: IAppState, action: Action): IAppState => {
       break;
     case 'SET_SELECTED_DATE':
       return { ...state, selected: action.payload };
+      break;
+    case 'SET_LOG_TYPES':
+      return { ...state, logsTypes: action.payload };
       break;
 
     default:

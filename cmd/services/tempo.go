@@ -3,6 +3,7 @@ package api_services
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -40,10 +41,9 @@ func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, err
 	from := date.Format("2006-01-02")
 	to := date.Format("2006-01-02")
 	url := fmt.Sprintf("/worklogs?from=%s&to=%s", from, to)
-	fmt.Println(url)
+	fmt.Println(c.ApiKey, "APID")
 	res, err := c.do(http.MethodGet, url, nil)
 	if err != nil {
-		fmt.Println(err)
 		return []worklog.WorkLogResult{}, err
 	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
@@ -51,10 +51,32 @@ func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, err
 		return []worklog.WorkLogResult{}, nil
 	}
 	var result worklog.WorkLogResponse
+	fmt.Println(string(body))
 	if err := json.Unmarshal(body, &result); err != nil {
 		return []worklog.WorkLogResult{}, nil
 	}
 
+	return result.Results, nil
+
+}
+
+func (c *Client) GetWorkLogAttribute() ([]worklog.WorkLogAttr, error) {
+
+	res, err := c.do(http.MethodGet, "/work-attributes", nil)
+
+	if err != nil {
+		return nil, err
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(string(body))
+	var result worklog.WorkLogTypeResponse
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return result.Results, nil
 
 }

@@ -7,8 +7,10 @@ import (
 	"github.com/tritac/tempopilot/cmd/internals/appstore"
 	api_services "github.com/tritac/tempopilot/cmd/services"
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -26,6 +28,18 @@ func main() {
 
 	app := NewApp(appStore, apiClient)
 
+	appMenu := menu.NewMenu()
+
+	FileMenu := appMenu.AddSubmenu("Setting")
+
+	FileMenu.AddText("API Settings", nil, func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "SETTING")
+	})
+
+	FileMenu.AddText("Quit", nil, func(cd *menu.CallbackData) {
+		runtime.Quit(app.ctx)
+	})
+
 	// Create application with options
 
 	err := wails.Run(&options.App{
@@ -40,7 +54,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 0, A: 1},
 		OnStartup:        app.startup,
 		OnDomReady:       app.onDomReady,
-
+		Menu:             appMenu,
 		Bind: []interface{}{
 			app,
 		},

@@ -18,6 +18,10 @@ export function GetWorkLog(arg1) {
   return window['go']['main']['App']['GetWorkLog'](arg1);
 }
 
+export function GetWorkLogTypes() {
+  return window['go']['main']['App']['GetWorkLogTypes']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
