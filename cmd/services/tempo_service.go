@@ -1,6 +1,7 @@
 package api_services
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"time"
@@ -23,9 +24,9 @@ func NewClient(host string, apiKey string, timeout time.Duration) *Client {
 	}
 }
 
-func (c *Client) do(method, endpoint string, params map[string]string) (*http.Response, error) {
+func (c *Client) do(method, endpoint string, params map[string]string, body []byte) (*http.Response, error) {
 	baseURL := fmt.Sprintf("%s/%s", c.host, endpoint)
-	req, err := http.NewRequest(method, baseURL, nil)
+	req, err := http.NewRequest(method, baseURL, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}

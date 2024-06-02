@@ -6,6 +6,10 @@ export function CreateUserConfig(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateUserConfig'](arg1, arg2, arg3);
 }
 
+export function DeleteWorkflow(arg1) {
+  return window['go']['main']['App']['DeleteWorkflow'](arg1);
+}
+
 export function GetMonthList(arg1, arg2) {
   return window['go']['main']['App']['GetMonthList'](arg1, arg2);
 }
@@ -24,6 +28,10 @@ export function GetWorkLogTypes() {
 
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
+}
+
+export function PostWorkLog(arg1, arg2) {
+  return window['go']['main']['App']['PostWorkLog'](arg1, arg2);
 }
 
 export function VerifyApiKey(arg1) {

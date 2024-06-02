@@ -6,7 +6,7 @@ toolchain go1.22.0
 
 require (
 	github.com/adrg/xdg v0.4.0
-	github.com/wailsapp/wails/v2 v2.8.2
+	github.com/wailsapp/wails/v2 v2.7.1
 )
 
 require (

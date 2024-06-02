@@ -21,6 +21,25 @@ export namespace appstore {
 
 }
 
+export namespace main {
+	
+	export class PostWorkLog {
+	    key: string;
+	    value: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new PostWorkLog(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.key = source["key"];
+	        this.value = source["value"];
+	    }
+	}
+
+}
+
 export namespace worklog {
 	
 	export class Issue {
@@ -58,7 +77,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -126,7 +145,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -178,7 +197,7 @@ export namespace worklog {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice && a.map) {
+		    if (a.slice) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {

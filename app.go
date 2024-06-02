@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -98,4 +99,47 @@ func (a *App) GetWorkLog(unixTime int64) ([]worklog.WorkLogResult, error) {
 func (a *App) GetWorkLogTypes() ([]worklog.WorkLogAttr, error) {
 
 	return a.apiClient.GetWorkLogAttribute()
+}
+
+type PostWorkLog struct {
+	Key   string  `json:"key"`
+	Value float64 `json:"value"`
+}
+
+func (a *App) PostWorkLog(work []PostWorkLog, date int64) {
+
+	d := time.UnixMilli(date * 1000).Format("2006-01-02")
+
+	for i, log := range work {
+
+		attrs := make([]worklog.WorkLogValue, 0)
+		arrt := worklog.WorkLogValue{Key: "_Test1_", Value: log.Key}
+		attrs = append(attrs, arrt)
+
+		l := worklog.CreateWorkLog{
+			Attributes:       attrs,
+			BillableSeconds:  log.Value * 60 * 60,
+			WorkerID:         a.appStore.UserConfig.UserId,
+			OriginTaskID:     "14914",
+			AuthorAccountID:  a.appStore.UserConfig.UserId,
+			TimeSpentSeconds: log.Value * 60 * 60,
+			IssueID:          14914,
+			StartDate:        d,
+		}
+		if l.BillableSeconds > 0 {
+			a.apiClient.CreateWorkLog(l)
+			v, err := json.Marshal(l)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(string(v), i)
+		}
+
+	}
+
+}
+
+func (a *App) DeleteWorkflow(id int) (bool, error) {
+
+	return a.apiClient.DeleteLog(id)
 }

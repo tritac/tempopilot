@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -22,7 +21,7 @@ type Response struct {
 }
 
 func (c *Client) VerifyApi(apiKey string) bool {
-	res, err := c.do(http.MethodGet, "/accounts", nil)
+	res, err := c.do(http.MethodGet, "/accounts", nil, nil)
 	if err != nil {
 		return false
 	}
@@ -42,11 +41,11 @@ func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, err
 	to := date.Format("2006-01-02")
 	url := fmt.Sprintf("/worklogs?from=%s&to=%s", from, to)
 	fmt.Println(c.ApiKey, "APID")
-	res, err := c.do(http.MethodGet, url, nil)
+	res, err := c.do(http.MethodGet, url, nil, nil)
 	if err != nil {
 		return []worklog.WorkLogResult{}, err
 	}
-	body, err := ioutil.ReadAll(res.Body) // response body is []byte
+	body, err := io.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		return []worklog.WorkLogResult{}, nil
 	}
@@ -62,7 +61,7 @@ func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, err
 
 func (c *Client) GetWorkLogAttribute() ([]worklog.WorkLogAttr, error) {
 
-	res, err := c.do(http.MethodGet, "/work-attributes", nil)
+	res, err := c.do(http.MethodGet, "/work-attributes", nil, nil)
 
 	if err != nil {
 		return nil, err
@@ -79,4 +78,34 @@ func (c *Client) GetWorkLogAttribute() ([]worklog.WorkLogAttr, error) {
 	}
 	return result.Results, nil
 
+}
+
+func (c *Client) CreateWorkLog(workLog worklog.CreateWorkLog) {
+
+	payload, err := json.Marshal(workLog)
+	if err != nil {
+		fmt.Println(err)
+	}
+	res, err := c.do(http.MethodPost, "/worklogs", nil, payload)
+	if err != nil {
+		fmt.Println(err)
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(body))
+
+}
+
+func (c *Client) DeleteLog(id int) (bool, error) {
+
+	url := fmt.Sprintf("/worklogs/%d", id)
+	fmt.Println(url)
+	res, err := c.do(http.MethodDelete, url, nil, nil)
+	if err != nil {
+		fmt.Println(err, "Error")
+	}
+	fmt.Println(res.StatusCode, res.Status)
+	return res.StatusCode == http.StatusOK || res.StatusCode == http.StatusNoContent, nil
 }

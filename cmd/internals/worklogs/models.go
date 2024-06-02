@@ -1,6 +1,8 @@
 package worklog
 
-import "time"
+import (
+	"time"
+)
 
 type MetaData struct {
 	Count  int `json:"count"`
@@ -65,4 +67,15 @@ type WorkLogAttr struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
 	Global bool   `json:"global"`
+}
+
+type CreateWorkLog struct {
+	Attributes       []WorkLogValue `json:"attributes"`
+	BillableSeconds  float64        `json:"billableSeconds"`
+	WorkerID         string         `json:"workerId"`
+	StartDate        string         `json:"startDate"`
+	TimeSpentSeconds float64        `json:"timeSpentSeconds"`
+	OriginTaskID     string         `json:"originTaskId"`
+	AuthorAccountID  string         `json:"authorAccountId"`
+	IssueID          int            `json:"issueId"`
 }

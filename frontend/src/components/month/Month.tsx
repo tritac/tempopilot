@@ -16,7 +16,7 @@ const Month = (props: Props) => {
 
   useEffect(() => {
     if (api?.isValidApi) {
-      const time = moment(now()).month();
+      const time = moment(new Date()).month();
       console.log({ time });
       GetMonthList(2024, time + 1).then((res) => {
         setDateList(res);
