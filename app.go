@@ -10,6 +10,7 @@ import (
 	"github.com/tritac/tempopilot/cmd/internals/appstore"
 	worklog "github.com/tritac/tempopilot/cmd/internals/worklogs"
 	api_services "github.com/tritac/tempopilot/cmd/services"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -110,6 +111,8 @@ func (a *App) PostWorkLog(work []PostWorkLog, date int64) {
 
 	d := time.UnixMilli(date * 1000).Format("2006-01-02")
 
+	createChan := make(chan worklog.WorkLogResult)
+	createErr := make(chan error)
 	for i, log := range work {
 
 		attrs := make([]worklog.WorkLogValue, 0)
@@ -127,7 +130,16 @@ func (a *App) PostWorkLog(work []PostWorkLog, date int64) {
 			StartDate:        d,
 		}
 		if l.BillableSeconds > 0 {
-			a.apiClient.CreateWorkLog(l)
+			go func() {
+				fmt.Println("Channel initiated")
+				res, err := a.apiClient.CreateWorkLog(l)
+				if err != nil {
+					createErr <- err
+
+				}
+				createChan <- res
+
+			}()
 			v, err := json.Marshal(l)
 			if err != nil {
 				fmt.Println(err)
@@ -135,6 +147,17 @@ func (a *App) PostWorkLog(work []PostWorkLog, date int64) {
 			fmt.Println(string(v), i)
 		}
 
+	}
+
+	select {
+	case res := <-createChan:
+		{
+			runtime.EventsEmit(a.ctx, "worklog:created", res)
+		}
+	case err := <-createErr:
+		{
+			fmt.Println(err)
+		}
 	}
 
 }

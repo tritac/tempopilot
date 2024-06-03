@@ -80,7 +80,7 @@ func (c *Client) GetWorkLogAttribute() ([]worklog.WorkLogAttr, error) {
 
 }
 
-func (c *Client) CreateWorkLog(workLog worklog.CreateWorkLog) {
+func (c *Client) CreateWorkLog(workLog worklog.CreateWorkLog) (worklog.WorkLogResult, error) {
 
 	payload, err := json.Marshal(workLog)
 	if err != nil {
@@ -94,7 +94,12 @@ func (c *Client) CreateWorkLog(workLog worklog.CreateWorkLog) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(string(body))
+	var result worklog.WorkLogResult
+	if res.StatusCode == http.StatusOK {
+		err = json.Unmarshal(body, &result)
+		return result, err
+	}
+	return result, err
 
 }
 
@@ -106,6 +111,5 @@ func (c *Client) DeleteLog(id int) (bool, error) {
 	if err != nil {
 		fmt.Println(err, "Error")
 	}
-	fmt.Println(res.StatusCode, res.Status)
 	return res.StatusCode == http.StatusOK || res.StatusCode == http.StatusNoContent, nil
 }

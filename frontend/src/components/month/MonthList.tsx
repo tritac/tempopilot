@@ -14,7 +14,9 @@ const MonthList = ({ dates }: Props) => {
     dates.forEach((date) => {
       const momentDate = moment(date.date);
       const today = momentDate.isSame(new Date(), 'day');
+
       if (today) {
+        dispatch({ type: 'SET_SELECTED_DATE', payload: date });
         setIndex(dates.indexOf(date));
       }
     });

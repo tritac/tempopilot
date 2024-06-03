@@ -7,6 +7,7 @@ import {
 } from '../../../wailsjs/go/main/App';
 import moment from 'moment';
 import { worklog } from '../../../wailsjs/go/models';
+import { EventsEmit, EventsOn } from '../../../wailsjs/runtime/runtime';
 
 type Props = {};
 
@@ -29,34 +30,45 @@ const WorkDay = (props: Props) => {
     useState<{ key: string; value: number; color: string }[]>(initial);
   const [loading, setLoading] = useState(false);
 
+  const fetchSelected = (date: worklog.WorkDay) => {
+    console.log(moment(date.date).unix());
+    const unixTime = moment(date.date).unix();
+    setLoading(true);
+    GetWorkLog(unixTime).then((res) => {
+      const workLogMap: any = {};
+      res.map((workLog) => {
+        const key = workLog.attributes.values[0].value;
+        const value = workLog.timeSpentSeconds / 3600;
+        if (workLogMap[key]) {
+          workLogMap[key] += value;
+        } else {
+          workLogMap[key] = value;
+        }
+      });
+      const remote = initial.map((log) => {
+        const hrs = workLogMap[log.key] || 0;
+        return { ...log, value: hrs };
+      });
+
+      setWorklog(res);
+
+      setWorkLohType(remote);
+      setLoading(false);
+      // window.location.reload();
+    });
+  };
+
   useEffect(() => {
     setWorkLohType(initial);
     if (selected?.date) {
       console.log(moment(selected.date).unix());
       const unixTime = moment(selected.date).unix();
       setLoading(true);
-      GetWorkLog(unixTime).then((res) => {
-        setWorklog(res);
-        console.log(res);
-        setWorkLohType(initial);
-        console.log(JSON.stringify(workLogType), 'tiy');
-        const remote = workLogType.map((log) => {
-          const remoteLog = res.find(
-            (r) => r.attributes.values[0].value === log.key
-          );
-          if (remoteLog) {
-            const hrs = remoteLog.timeSpentSeconds / (60 * 60);
-            return { ...log, value: log.value + hrs };
-          }
-          // console.log(remoteLog);
-          return { ...log, value: 0 };
-        });
-
-        setWorkLohType(remote);
-        setLoading(false);
-        // window.location.reload();
-      });
+      fetchSelected(selected);
     }
+    EventsOn('worklog:created', (data) => {
+      console.log(data);
+    });
   }, [selected]);
 
   useEffect(() => {
@@ -82,7 +94,11 @@ const WorkDay = (props: Props) => {
   const handlePostWork = () => {
     PostWorkLog(workLogType, timeTime)
       .then((res) => {
-        console.log(res);
+        if (selected) {
+          setTimeout(() => {
+            fetchSelected(selected);
+          }, 1000);
+        }
       })
       .then((e) => {
         console.log(e);
@@ -99,6 +115,9 @@ const WorkDay = (props: Props) => {
           // console.log(w, 'W');
         }
         setLoading(false);
+        if (selected) {
+          fetchSelected(selected);
+        }
       })
       .catch((er) => {
         setLoading(false);
@@ -114,7 +133,7 @@ const WorkDay = (props: Props) => {
         >
           {workLogType.map((wl) => (
             <div
-              className='h-full '
+              className=' h-8'
               style={{
                 backgroundColor: wl.color,
                 width: `${(wl.value / 8) * 100}%`,
@@ -193,7 +212,7 @@ const WorkDay = (props: Props) => {
               {worklog.map((re) => {
                 return (
                   <div
-                    className='text-xs  my-3 flex w-full justify-between '
+                    className='text-xs  my-2 flex w-full justify-between '
                     key={re.tempoWorklogId}
                   >
                     <div className='bg-gray-700  w-1/2'>
