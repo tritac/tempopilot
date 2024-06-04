@@ -56,6 +56,14 @@ func (a *App) CreateUserConfig(name, apiKey, userId string) (appstore.UserConfig
 	return res, nil
 }
 
+func (a *App) InvalidateApiKey(isValid bool) {
+	a.appStore.UserConfig.IsValidApi = isValid
+	a.appStore.StoreConfig(a.appStore.UserConfig.UserName, a.appStore.UserConfig.ApiKey, a.appStore.UserConfig.UserId, false)
+	runtime.WindowReloadApp(a.ctx)
+	runtime.WindowReload(a.ctx)
+
+}
+
 func (a *App) GetUserConfig() (appstore.UserConfig, error) {
 
 	res, err := a.appStore.LoadConfig()
@@ -75,7 +83,6 @@ func (a *App) VerifyApiKey(apiKey string) bool {
 		return false
 	}
 	req.Header.Add("Authorization", "Bearer "+apiKey)
-	fmt.Println(apiKey)
 	resp, err := http.DefaultClient.Do(req)
 
 	if err != nil {
@@ -90,7 +97,11 @@ func (a *App) VerifyApiKey(apiKey string) bool {
 func (a *App) GetWorkLog(unixTime int64) ([]worklog.WorkLogResult, error) {
 	date := time.UnixMilli(unixTime * 1000)
 	fmt.Println(date)
-	res, err := a.apiClient.GetUserBacklogByDate(date)
+	res, isValid, err := a.apiClient.GetUserBacklogByDate(date)
+	if !isValid {
+		a.InvalidateApiKey(false)
+		return []worklog.WorkLogResult{}, err
+	}
 	if err != nil {
 		return []worklog.WorkLogResult{}, err
 	}

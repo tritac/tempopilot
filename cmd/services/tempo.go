@@ -34,28 +34,36 @@ func (c *Client) VerifyApi(apiKey string) bool {
 
 }
 
-func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, error) {
+func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, bool, error) {
 
 	date := t
 	from := date.Format("2006-01-02")
 	to := date.Format("2006-01-02")
 	url := fmt.Sprintf("/worklogs?from=%s&to=%s", from, to)
 	fmt.Println(c.ApiKey, "APID")
+
 	res, err := c.do(http.MethodGet, url, nil, nil)
+
 	if err != nil {
-		return []worklog.WorkLogResult{}, err
+		return []worklog.WorkLogResult{}, true, err
 	}
-	body, err := io.ReadAll(res.Body) // response body is []byte
-	if err != nil {
-		return []worklog.WorkLogResult{}, nil
-	}
-	var result worklog.WorkLogResponse
-	fmt.Println(string(body))
-	if err := json.Unmarshal(body, &result); err != nil {
-		return []worklog.WorkLogResult{}, nil
+	if res.StatusCode == http.StatusUnauthorized {
+		fmt.Println("ERORR VALID")
+		return []worklog.WorkLogResult{}, false, err
 	}
 
-	return result.Results, nil
+	body, err := io.ReadAll(res.Body) // response body is []byte
+
+	if err != nil {
+		return []worklog.WorkLogResult{}, true, nil
+	}
+	var result worklog.WorkLogResponse
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		return []worklog.WorkLogResult{}, true, nil
+	}
+
+	return result.Results, true, nil
 
 }
 

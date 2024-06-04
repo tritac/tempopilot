@@ -30,6 +30,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function InvalidateApiKey(arg1) {
+  return window['go']['main']['App']['InvalidateApiKey'](arg1);
+}
+
 export function PostWorkLog(arg1, arg2) {
   return window['go']['main']['App']['PostWorkLog'](arg1, arg2);
 }

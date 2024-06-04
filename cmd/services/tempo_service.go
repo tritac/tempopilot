@@ -42,5 +42,7 @@ func (c *Client) do(method, endpoint string, params map[string]string, body []by
 
 	req.URL.RawQuery = q.Encode()
 
-	return c.httpClient.Do(req)
+	res, err := c.httpClient.Do(req)
+
+	return res, err
 }

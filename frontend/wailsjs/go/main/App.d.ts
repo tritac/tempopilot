@@ -18,6 +18,8 @@ export function GetWorkLogTypes():Promise<Array<worklog.WorkLogAttr>>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function InvalidateApiKey(arg1:boolean):Promise<void>;
+
 export function PostWorkLog(arg1:Array<main.PostWorkLog>,arg2:number):Promise<void>;
 
 export function VerifyApiKey(arg1:string):Promise<boolean>;
