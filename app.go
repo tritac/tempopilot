@@ -30,6 +30,12 @@ func NewApp(appstore *appstore.AppStore, apiClient *api_services.Client) *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
+	runtime.EventsOn(a.ctx, "RELOAD", func(data ...interface{}) {
+		fmt.Println("EVENT")
+		runtime.WindowReloadApp(a.ctx)
+		runtime.WindowReload(a.ctx)
+	})
+
 }
 
 // Greet returns a greeting for the given name
@@ -100,6 +106,7 @@ func (a *App) GetWorkLog(unixTime int64) ([]worklog.WorkLogResult, error) {
 	res, isValid, err := a.apiClient.GetUserBacklogByDate(date)
 	if !isValid {
 		a.InvalidateApiKey(false)
+		runtime.EventsEmit(a.ctx, "INVALIDATE", true)
 		return []worklog.WorkLogResult{}, err
 	}
 	if err != nil {

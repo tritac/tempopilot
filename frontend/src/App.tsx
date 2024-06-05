@@ -13,6 +13,7 @@ function App() {
   const {
     appState: { api },
   } = useAppStore();
+  const [apiValid, setApiValid] = useState(true);
 
   console.log(api);
 
@@ -20,16 +21,29 @@ function App() {
     EventsOn('SETTING', () => {
       setShowSetting(!showSetting);
     });
+
+    EventsOn('INVALIDATE', () => {
+      setApiValid(false);
+    });
   }, []);
 
-  if (!api?.isValidApi || showSetting) {
-    return <Intro setShowSetting={setShowSetting} />;
+  if ((!api?.isValidApi && apiValid) || showSetting) {
+    return (
+      <>
+        {/* <div className='text-white'>{apiValid ? 'true' : 'false'}</div> */}
+        <Intro setShowSetting={setShowSetting} />
+      </>
+    );
   }
+
+  const handleReload = () => {
+    EventsEmit('RELOAD');
+  };
 
   return (
     <div id='App '>
       <div className='flex '>
-        <div className='w-1/3 bg-black text-white h-screen border-r-[1px] '>
+        <div className='w-1/3 bg-black text-white h-screen border-r-[1px]  relative'>
           <Month />
         </div>
         <div className='w-full bg-gray-950 text-white pt-2 px-2 relative'>
@@ -37,7 +51,13 @@ function App() {
             <DayLog />
           </div> */}
           {/* <div className='w-full border  h-[calc(100%-4rem)] mt-4 px-2 relative'> */}
-          <div>
+          <div className='relative'>
+            <div
+              className='absolute z-30 cursor-pointer top-14 right-2 px-1 py-1 bg-blue-700  text-xs'
+              onClick={handleReload}
+            >
+              Reload{' '}
+            </div>
             <WorkDay />
           </div>
           {/* </div> */}

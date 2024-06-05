@@ -208,20 +208,20 @@ const WorkDay = (props: Props) => {
             </div>
           </div>
           <div>
-            <div className='grid grid-cols-4 w-full '>
+            <div className='grid grid-cols-4 w-full  gap-x-2 '>
               {worklog.map((re) => {
                 return (
                   <div
-                    className='text-xs  my-2 flex w-full justify-between '
+                    className='text-xs  my-1 flex w-full justify-between border  '
                     key={re.tempoWorklogId}
                   >
-                    <div className='bg-gray-700  w-1/2'>
+                    <div className='bg-gray-700  w-full'>
                       {re.attributes.values[0].value}
                     </div>
-                    <div className='pl-2 '>{re.timeSpentSeconds / 3600}</div>
+                    <div className='px-4 '>{re.timeSpentSeconds / 3600}</div>
                     <div
                       onClick={() => handleDeleteLog(re.tempoWorklogId)}
-                      className='bg-red-400 px-2 mx-2 self-end cursor-pointer'
+                      className='bg-red-400 px-2 flex  self-end cursor-pointer'
                     >
                       x
                     </div>

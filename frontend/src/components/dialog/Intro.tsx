@@ -9,9 +9,9 @@ function Intro({ setShowSetting }: Props) {
   const {
     appState: { api },
   } = useAppStore();
-  const [userName, setUserName] = useState('');
-  const [tempoApiKey, setApiKey] = useState('');
-  const [tempoUserId, setTempoId] = useState('');
+  const [userName, setUserName] = useState(api?.user_name || '');
+  const [tempoApiKey, setApiKey] = useState(api?.api_key || '');
+  const [tempoUserId, setTempoId] = useState(api?.user_id || '');
 
   const submitHandler = () => {
     // CreateUserConfig(userName, tempoApiKey, tempoUserId);
@@ -34,7 +34,31 @@ function Intro({ setShowSetting }: Props) {
     <div className='flex h-screen w-full bg-black  text-white '>
       <div className='border w-full mx-2 my-2 flex justify-center items-center '>
         <div className='flex flex-col gap-3'>
-          {JSON.stringify(api)}
+          {/* {JSON.stringify(api)} */}
+          <div className='text-sm space-y-2'>
+            <div className='flex'>
+              <div className='bg-gray-800 px-2 w-20 text-xs'>NAME</div>
+              <div className='px-2'>{api?.user_name}</div>
+            </div>
+            <div className='flex'>
+              <div className='bg-gray-800 px-2 w-20 text-xs'>API KEY</div>
+              <div className='px-2'>{api?.api_key}</div>
+            </div>
+            <div className='flex'>
+              <div className='bg-gray-800 px-2 w-20 text-xs'>WORKER ID</div>
+              <div className='px-2'>{api?.user_id}</div>
+            </div>
+            <div className='flex'>
+              <div className='bg-gray-800 px-2 w-20 text-xs'>API VALID</div>
+              <div className='px-2 flex items-center'>
+                {api?.isValidApi ? (
+                  <div className='h-2 w-2 rounded-sm bg-green-500'></div>
+                ) : (
+                  <div className='h-2 w-2 rounded-sm bg-red-500'></div>
+                )}
+              </div>
+            </div>
+          </div>
           <div className='relative  flex flex-col'>
             <span className='text-xs absolute -top-2 bg-black left-3 px-1'>
               Name

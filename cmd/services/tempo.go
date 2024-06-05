@@ -48,7 +48,6 @@ func (c *Client) GetUserBacklogByDate(t time.Time) ([]worklog.WorkLogResult, boo
 		return []worklog.WorkLogResult{}, true, err
 	}
 	if res.StatusCode == http.StatusUnauthorized {
-		fmt.Println("ERORR VALID")
 		return []worklog.WorkLogResult{}, false, err
 	}
 
